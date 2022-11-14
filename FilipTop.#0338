@@ -1,0 +1,314 @@
+local GuiName = "TopGui"
+if getgenv().premium == true then
+    GuiName = "TopGui - PREMIUM"
+end
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+local Window = OrionLib:MakeWindow({Name = GuiName, HidePremium = false, SaveConfig = false, ConfigFolder = "TopGui", IntroEnabled = false})
+local plr = game.Players.LocalPlayer.Character
+local player = game.Players.LocalPlayer
+
+_G.merging = false
+_G.selectedplayer = ""
+_G.Loop = false
+_G.autotap = false
+
+OrionLib:MakeNotification({
+	Name = "Script enabled!",
+	Content = "Thnx for using this script!",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
+
+
+local Home = Window:MakeTab({
+	Name = "Home",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+local Farming = Window:MakeTab({
+	Name = "Farming",
+	Icon = "rbxassetid://10776932000",
+	PremiumOnly = false
+})
+
+local trollandgrief = Window:MakeTab({
+	Name = "Troll and Grief",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+-----------------------------------------------------------------------------------------------------
+--                                           Functions
+-----------------------------------------------------------------------------------------------------
+function merging()
+    local playerposition = plr.HumanoidRootPart.CFrame
+    while _G.Loop == true do
+        local player = game.Players.LocalPlayer
+        local plots = Game.Workspace.Plots
+        if _G.merging == true then
+            for _,plot in pairs(plots:GetChildren()) do
+                if plot.Name == player.Name then
+                    for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                        blocks2.CFrame = playerposition + Vector3.new(0, -200, 0)
+                    end
+                end
+            end
+            wait(0.0001)
+        else
+            for _,plot in pairs(plots:GetChildren()) do
+                if plot.Name == player.Name then
+                    for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                        blocks2.CanCollide = true
+                        blocks2.Anchored = false
+                        blocks2.CFrame = playerposition + Vector3.new(0, 5, 0)
+                    end
+                end
+            end
+            _G.Loop = false
+        end
+        wait(0.001)
+    end
+end
+
+
+
+function autotap()
+    while _G.autotap == true do
+        local player = game.Players.LocalPlayer
+        local plots = Game.Workspace.Plots
+        for _,plot in pairs(plots:GetChildren()) do
+            if plot.Name == player.Name then
+                for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                    local test = blocks2
+                    game:GetService("ReplicatedStorage").Functions.Tap:FireServer(test)
+                end
+            end
+        end
+        wait(0.001)
+    end
+end
+
+function fastautotap()
+    while _G.fastautotap == true do
+        local player = game.Players.LocalPlayer
+        local plots = Game.Workspace.Plots
+        for _,plot in pairs(plots:GetChildren()) do
+            if plot.Name == player.Name then
+                for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                    local test = blocks2
+                    game:GetService("ReplicatedStorage").Functions.Tap:FireServer(test)
+                end
+            end
+        end
+        wait(0.00001)
+    end
+end
+
+
+function destroyblocks()
+    if _G.tapped == true then
+        local select = _G.selectedplayer
+        local plr2 = game.Workspace:FindFirstChild(select)
+        print(plr2)
+        local plots = Game.Workspace.Plots
+        _G.tapped = false
+        for _,plot in pairs(plots:GetChildren()) do
+            if plot.Name == select then
+                print("ano")
+                for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                    blocks2.CFrame = plr.HumanoidRootPart.CFrame + Vector3.new(0, 40, 0)
+                    game:GetService("ReplicatedStorage").Functions.TakeBlock:FireServer(blocks2)
+                end
+            end
+        end
+    end
+    while _G.hold == true do
+        local select = _G.selectedplayer
+        local plr2 = game.Workspace:FindFirstChild(select)
+        print(plr2)
+        local plots = Game.Workspace.Plots
+        for _,plot in pairs(plots:GetChildren()) do
+            if plot.Name == select then
+                print("ano")
+                for _,blocks2 in pairs(plot.Blocks:GetChildren()) do
+                    blocks2.CFrame = plr.HumanoidRootPart.CFrame + Vector3.new(0, 80, 0)
+                    game:GetService("ReplicatedStorage").Functions.TakeBlock:FireServer(blocks2)
+                end
+            end
+        end
+        wait(0.001)
+    end
+end
+
+function autofrenzy()
+    while _G.autofrenzy == true do
+        local plrlast = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Workspace.Obby.Finish.CFrame
+        wait(0.001)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = plrlast
+        wait(62)
+    end
+end
+
+function spawntier()
+    while _G.spawntier == true do
+        game:GetService("ReplicatedStorage").Functions.BuyUpgrade:FireServer("SpawnTier")
+        wait(1)
+    end
+end
+
+function maxblocks()
+    while _G.maxblocks == true do
+        game:GetService("ReplicatedStorage").Functions.BuyUpgrade:FireServer("MaxBlocks")
+        wait(1)
+    end
+end
+
+function spawnrate()
+    while _G.spawnrate == true do
+        game:GetService("ReplicatedStorage").Functions.BuyUpgrade:FireServer("Cooldown")
+        wait(1)
+    end
+end
+
+-----------------------------------------------------------------------------------------------------
+--                                        Farming
+-----------------------------------------------------------------------------------------------------
+
+
+Farming:AddToggle({
+	Name = "Auto Merging",
+	Default = false,
+	Callback = function(Value)
+		_G.merging = Value
+        _G.Loop = true
+        merging()
+	end    
+})
+
+Farming:AddToggle({
+	Name = "Auto Taping",
+	Default = false,
+	Callback = function(Value)
+		_G.autotap = Value
+        autotap()
+	end    
+})
+
+if getgenv().premium == true then
+    Farming:AddToggle({
+        Name = "Fast Auto Taping - Laggy",
+        Default = false,
+        Callback = function(Value)
+            _G.fastautotap = Value
+            fastautotap()
+        end    
+    })
+else
+    Farming:AddToggle({
+    Name = "!!LOCKED - only premium!! Fast Auto Taping - Laggy",
+    Default = false,
+    Callback = function(Value)
+        OrionLib:MakeNotification({
+            Name = "U dont have PREMIUM!",
+            Content = "U can buy it on ours discord!",
+            Image = "rbxassetid://4483345998",
+            Time = 5
+        })
+    end
+    })
+end
+
+Farming:AddToggle({
+	Name = "Auto 2x Frenzy",
+	Default = false,
+	Callback = function(Value)
+		_G.autofrenzy = Value
+        autofrenzy()
+	end    
+})
+
+Farming:AddToggle({
+	Name = "Auto Upgrade 'spawn tier'",
+	Default = false,
+	Callback = function(Value)
+		_G.spawntier = Value
+        spawntier()
+	end    
+})
+
+Farming:AddToggle({
+	Name = "Auto Upgrade 'max blocks'",
+	Default = false,
+	Callback = function(Value)
+		_G.maxblocks = Value
+        maxblocks()
+	end    
+})
+
+Farming:AddToggle({
+	Name = "Auto Upgrade 'spawn rate'",
+	Default = false,
+	Callback = function(Value)
+		_G.spawnrate = Value
+        spawnrate()
+	end    
+})
+
+-----------------------------------------------------------------------------------------------------
+--                                     Troll and Grief
+-----------------------------------------------------------------------------------------------------
+
+if getgenv().premium == true then
+    trollandgrief:AddTextbox({
+        Name = "Type player name!",
+        Default = "",
+        TextDisappear = true,
+        Callback = function(Value)
+            _G.selectedplayer = Value
+        end	  
+    })
+    
+    
+    trollandgrief:AddButton({
+        Name = "Grief player blocks",
+        Callback = function()
+              if _G.TrollandGriefSelectedPlayer ~= "none" then
+                destroyblocks()
+                _G.tapped = true
+            else
+                OrionLib:MakeNotification({
+                    Name = "Error 022",
+                    Content = "Player is not selected!!",
+                    Image = "rbxassetid://4483345998",
+                    Time = 5
+                })
+            end
+          end    
+    })
+    
+    trollandgrief:AddToggle({
+        Name = "Toggle grief player blocks!",
+        Default = false,
+        Callback = function(Value)
+            _G.hold = Value
+            if _G.TrollandGriefSelectedPlayer ~= "none" then
+                destroyblocks()
+            else
+                OrionLib:MakeNotification({
+                    Name = "Error 022",
+                    Content = "Player is not selected!!",
+                    Image = "rbxassetid://4483345998",
+                    Time = 5
+                })
+            end
+          end       
+    })
+else
+    trollandgrief:AddLabel("This section is only for premium users!")
+end
+
+
+
+OrionLib:Init()
